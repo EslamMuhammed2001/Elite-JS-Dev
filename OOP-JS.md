@@ -7,61 +7,59 @@
 
 1. By Useing Constructor Function 
 
-```
+```javascript
 
-	  function Person(name="",age=0,newGender="none"){
-	  
-			let gender=newGender // now it,s private
-	  
-			this.name=name // public proberty
-			this.age=age //public proberty
+function Base(attr1 = undefined, attr2 = undefined, attr3Value = undefined) {
+	
+	let attr3 = attr3Value  // private 
 
+	this.attr1 = attr1
+    this.attr2 = attr2
+	
+    this.setAttr3 = function(updateAttr3) {
+		attr3 = updateAttr3
+	}
 
-			this.setGender=function(newGender){
-				  gender=newGender
-			}
-
-			this.getGender=function(){
-				  return gender
-			}
-	  
-			this.info=function(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} `)
-			}
-	  
+	this.getAttr3 = function() {
+		return attr3
+	}
+	
+	this.info = function() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
 }
 
 ```
 
 2. with ES6 `class` Keyword Syntax Sugar 
 
-```
-	  class Person{
-			
-			name
-			age
-			#gender
+```javascript
 
-			constructor(name,age,gender){
-				  this.name=name
-				  this.age=age
-				  this.#gender=gender
-			}
+class Base {
+    
+	attr1;
+	attr2;
+	#attr3;
 
-			info(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} `)
-			}
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
 
-			get getGender(){
-				  return this.#gender
-			}
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
 
-			set setGender(gender){
-				  this.#gender=gender
-			}
+	get getAttr3() {
+		return this.#attr3
+	}
 
-    }
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
 
+}
 ```
 
 
@@ -69,17 +67,46 @@
 
 1. to generate a new instance object from constructor function with `new` keyword
 
-```
-	  let me = new Person("eslam",20,"male")
-```
-
-2. another way to do that by calling Person,s `call` Method
-
-```
-	  let me ={}
-	  Person.call(me,"eslam",20,"male")
+```javascript
+let obj = new Base("attr1","attr2","attr3")
 ```
 
+2. another ways  for Getting an Instance from a Constructor
+
+1. `Constructor.call` 
+```javascript
+let obj ={}
+Base.call(obj,"attr1","attr2","attr3")
+```
+
+2. `Object.create(Constructor.prototype)`
+
+```javascript
+let obj =  Object.create(Base.prototype)
+```
+
+
+3. Useing Custom `new` function
+
+- implement how `new` work in js exactly
+ 
+```javascript
+function new_obj(constructor,...args){
+    let obj = {}
+    constructor.call(obj,...args)
+    obj.__proto__= constructor.prototype
+    return obj
+}
+```
+
+```javascript
+function new_obj(constructor,...args){
+    let obj = {}
+    constructor.call(obj,...args)
+    Object.setPrototypeOf(obj,constructor.prototype)
+    return obj
+}
+```
 
 ---
 
@@ -92,38 +119,84 @@
 1. useing `call` method
 
 
-```
-	  function Developer(name="",age=0,gender="none",description=""){
-			Person.call(this,name,age,gender)
-			this.description=description
-	  }
+```javascript
+function Base(attr1 = undefined, attr2 = undefined, attr3Value = undefined) {
+
+	let attr3 = attr3Value  // private 
+
+	this.attr1 = attr1
+	this.attr2 = attr2
+
+	this.setAttr3 = function(updateAttr3) {
+		attr3 = updateAttr3
+	}
+
+	this.getAttr3 = function() {
+		return attr3
+	}
+
+	this.info = function() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
+}
+
+function Derived(attr1 = undefined, attr2 = undefined, attr3 = undefined, attr4 = undefined) {
+	
+    Base.call(this, attr1, attr2, attr3)
+	this.attr4 = attr4
 
 
-	  this.info=function(){
-			console.log(`Hello iam ${this.name} and my age is ${this.age} , description : ${this.description}`)
-	  }
+	this.info = function() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2} , attr4 : ${this.attr4}`)
+	}
+}
 ```
+
 
 
 
 2. useing keyword `extends` extends methods , attributes from parent , keyword `super` call the parent constructor
 
-```
-	  class Developer extends Person{
-			
-			description
+```javascript
+class Base {
 
-			constructor(name,age,gender,description){
-				  super(name,age,gender)
-				  this.description=description
-			}
+	attr1;
+	attr2;
+	#attr3;
 
-			info(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} , description : ${this.description}`)
-			}
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
 
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
 
-	  }
+	get getAttr3() {
+		return this.#attr3
+	}
+
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
+
+}
+
+class Derived extends Base {
+
+	attr4
+
+	constructor(attr1, attr2, attr3, attr4) {
+		super(attr1, attr2, attr3)
+		this.attr4 = attr4
+	}
+
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2} , attr4 : ${this.attr4}`)
+	}
+}
 ```
 
 ---
@@ -136,58 +209,60 @@
 
 1. getter and setter 
 
-```
-	  function Developer(name="",age=0,gender="none",description=""){
-			Person.call(this,name,age,gender)
-			let salary=0
-			this.description=description
-	  }
+```javascript
 
+function Base(attr1 = undefined, attr2 = undefined, attr3Value = undefined) {
 
-	  this.info=function(){
-			console.log(`Hello iam ${this.name} and my age is ${this.age} , description : ${this.description}`)
-	  }
+	let attr3 = attr3Value  // private 
 
-	  this.setSalary=function(newSalary){
-			salary=newSalary
-	  }
+	this.attr1 = attr1
+	this.attr2 = attr2
 
-	  this.getSalary=function(){
-			return salary
-	  }
+	this.setAttr3 = function(updateAttr3) {
+		attr3 = updateAttr3
+	}
+
+	this.getAttr3 = function() {
+		return attr3
+	}
+
+	this.info = function() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
+}
+
 
 ```
 
 2. getter and setter  useing  `get` and `set` es6 keywords , declareing  private attributes useing es6 : `#` 
 
-```
-	  class Developer extends Person{
-			
-			description
-			#salary
+```javascript
 
-			constructor(name,age,gender,description){
-				  super(name,age,gender)
-				  this.description=description
-				  this.#salary=0
-			}
-			
+class Base {
+    
+	attr1;
+	attr2;
+	#attr3;
 
-			info(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} , description : ${this.description}`)
-			}
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
 
-			get getSalary(){
-				  return this.#salary
-			}
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
 
+	get getAttr3() {
+		return this.#attr3
+	}
 
-			set setSalary(salary){
-				  this.#salary=salary
-			}
-			
-	  }
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
 
+}
 ```
 ---
 
@@ -205,52 +280,47 @@
 	  3. In method overriding, methods must have the same name and same signature.
 
 
-```
-	  class Person{
-			
-			name
-			age
-			#gender
+```javascript
+class Base {
 
-			constructor(name,age,gender){
-				  this.name=name
-				  this.age=age
-				  this.#gender=gender
-			}
+	attr1;
+	attr2;
+	#attr3;
 
-			info(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} `)
-			}
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
 
-			get getGender(){
-				  return this.#gender
-			}
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
 
-			set setGender(gender){
-				  this.#gender=gender
-			}
+	get getAttr3() {
+		return this.#attr3
+	}
 
-    }
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
+	}
 
-	  class Developer extends Person{
-			
-			description
+}
 
-			constructor(name,age,gender,description){
-				  super(name,age,gender)
-				  this.description=description
-			}
+class Derived extends Base {
 
-			// @Override info()
-			
-			info(){
-				  console.log(`Hello iam ${this.name} and my age is ${this.age} , description : ${this.description}`)
-			}
+	attr4
 
+	constructor(attr1, attr2, attr3, attr4) {
+		super(attr1, attr2, attr3)
+		this.attr4 = attr4
+	}
 
-	  }
-
-	
+    // @Override info()
+	info() {
+		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2} , attr4 : ${this.attr4}`)
+	}
+}
 
 ```
 
@@ -260,83 +330,99 @@
 	  2. It occurs within the class.
 	  3. In method Overloading, methods must have the same name and different signatures.
 
-```
-	   class Person{
-			
-			name
-			age
-			#gender
-
-			constructor(name,age,gender){
-				  this.name=name
-				  this.age=age
-				  this.#gender=gender
-			}
-			
-			// @Overload info()
-
-			info(name,age){
-				  if(typeof name == 'string'){
-						if(typeof age == 'number'){
-							  console.log(`Hello iam ${name} and my age is ${age}`)
-						}
-						else{
-							  console.log(console.log(`Hello my name is ${name} and my age is ${this.age}`))
-						}
-				  }
-				  else{
-						console.log(`Hello iam ${this.name} and my age is ${this.age} `)
-				  }
-			}
-    }
+```javascript
  
+class Base {
+
+	attr1;
+	attr2;
+	#attr3;
+
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
+
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
+
+	get getAttr3() {
+		return this.#attr3
+	}
+
+	// @ Overload info() 
+	
+	info(attr1, attr2) {
+		if (typeof attr1 == 'string') {
+			if (typeof attr2 == 'number') {
+				console.log(`attr1 : ${attr1} and attr2 : ${attr2}`)
+			}
+			else {
+				console.log(console.log(`attr1 : ${attr1} and attr2 :  ${this.attr2}`))
+			}
+		}
+		else {
+			console.log(`attr1 : ${this.attr1} and attr2 : ${this.attr2} `)
+		}
+	}
+
+}
 ```
 
 - another elegant way for Overloading 
 
-```
-	   class Person{
-			
-			name
-			age
-			#gender
-			#info=[
-				  
-				  function(){
-						console.log(`Hello iam ${this.name} and my age is ${this.age} `)
-				  },
-				  
-				  function(name){
-						console.log(`Hello iam ${name} and my age is ${this.age} `)
-				  },
-				  
-				  function(name,age){
-						console.log(`Hello iam ${name} and my age is ${age} `)
-				  },
+```javascript	 
+class Base {
 
-				  function(name,age,gender){
-						console.log(`Hello iam ${name} and my age is ${age} , ${gender} `)
-				  }
-			]
+	attr1;
+	attr2;
+	#attr3;
 
-			constructor(name,age,gender){
-				  this.name=name
-				  this.age=age
-				  this.#gender=gender
-			}
-			
-			// @Overload info()
+	#info = [
 
-			info(...args){
-				  if(args.length <= this.#info.length){
-						this.#info[args.length](...args)
-				  }
+		function() {
+			console.log(`attr1 :  ${this.attr1} and attr2 : ${this.attr2} `)
+		},
 
-			}
+		function(attr1) {
+			console.log(`attr1 :  ${attr1} and attr2 : ${this.attr2} `)
+		},
+
+		function(attr1, attr2) {
+			console.log(`attr1 :  ${attr1} and attr2 :  ${attr2} `)
+		},
+
+		function(attr1, attr2, attr3) {
+			console.log(`attr1 :  ${attr1} and attr2 : ${attr2} , ${attr3} `)
+		}
+	]
+	constructor(attr1, attr2, attr3) {
+		this.attr1 = attr1
+		this.attr2 = attr2
+		this.#attr3 = attr3
+	}
+
+	set setAttr3(attr3) {
+		this.#attr3 = attr3
+	}
+
+	get getAttr3() {
+		return this.#attr3
+	}
 
 
-    }
- 
+
+	// @Overload info()
+
+	info(...args) {
+		if (args.length <= this.#info.length) {
+			this.#info[args.length](...args)
+		}
+
+	}
+}
 ```
 
 
@@ -351,99 +437,170 @@
 
 - Abstraction Implementation Useing Es6 Syntax
 
-```
-	  // Abstract Class Implementation
+```javascript
 
-	  class Person{
+// define AbstractError 
 
-			name
-			age
-			
-			info(){
-				  throw new Error("It,s an Abstract Method You Need to Implement it ") 
-			}
+class AbstractError extends Error {
+	constructor(message) {
+		super(message)
+		this.name = AbstractError.name
+	}
+}
 
-			constructor(){
-				  if (this.constructor===Person){
-						throw new Error("Can,t Create Object from Abstract class")
-				  }
-			}
-	  }
-	  
-	  // Extending Abstract Class
+// Abstract Class
 
-	  class Developer extends Person{
-			
-			description
-			
-			constructor(name,age,description){
-				  this.name=name
-				  this.age=age
-				  this.description=description
-			}
+class Base {
 
-			// @Override info()
-			
-			info(){
-				  console.log(`Hello iam ${this.name} , my age is ${this.age} - ${this.description} `)
-			}
-	  
-	  }
+	constructor() {
+		if (this.constructor === Base) {
+			throw new AbstractError("Can,t Create Object from Abstract class")
+		}
+	}
 
+	info() {
+		throw new AbstractError("It,s an Abstract Method You Need to Implement it ")
+	}
+}
+
+// Extending Abstract Class
+
+class Derived extends Base {
+
+	constructor(attr1) {
+		super()
+		this.attr1 = attr1
+	}
+
+	// @Override info()
+
+	info() {
+		console.log(`attr1 : ${this.attr1}`)
+	}
+
+}
 
 
 ```
 
 - Abstraction Implementation
 
+```javascript
+
+
+
+// define Abstract Error Constructor
+
+function AbstractError(message) {
+	Error.call(this, message);
+	this.name = 'AbstractError';
+	this.message = message;
+}
+
+AbstractError.prototype = Object.create(Error.prototype);
+AbstractError.prototype.constructor = AbstractError;
+
+
+function Base() {
+	if (this.constructor == Base) {
+		throw new AbstractError("Can,t Create Object from Abstract class")
+	}
+	this.info = function() {
+		throw new AbstractError("It,s an Abstract Method You Need to Implement it ")
+	}
+
+}
+
+
+// Extending Abstract Constructor
+
+function Derived(attr1) {
+
+	Base.call(this)
+
+	this.attr1 = attr1
+
+	// @Override info()
+
+	this.info = function() {
+		console.log(`attr1 : ${this.attr1}`)
+	}
+
+}
+
+
 ```
-	  // Abstraction Implementation
-
-	  function Person(){
-			
-			if(this.constructor===Person){
-				  throw new Error("Can,t Create Object from Abstract class")
-			}
-
-			this.name
-			this.age
-			
-			this.info=function(){
-				 throw new Error("It,s an Abstract Method You Need to Implement it ") 
-			}
-			
-	  }
-
-
-	  // Extending Abstract Constructor
-	  
-	  function Developer(name,age,description){
-			
-			Person.call(this)
-			
-			this.name=name
-			this.age=age
-			this.description=description
-			
-			this.info = function(){
-				  console.log(`Hello iam ${this.name} , my age is ${this.age} - ${this.description} `)
-			}
-
-	  }
-
-```
-
 
 ---
+
+## 6. Static Attributes 
+
+-  `static` attribute is a variable that is associated with a `class`, rather than with an instance of a class. 
+- This means that there is only one copy of the static attribute, regardless of how many instances of the class are created  .
+
+
+- we can declare static attributes and methods in javascript useing ES6 `static` keyword
+
+
+```javascript
+class Base{
+   
+    static staticMethod(){
+        console.log("iam a static method")
+    }
+    
+    static staticValue=0
+    
+    increaseStaticValue(){
+       return ++this.constructor.staticValue
+    }
+    
+    getStaticValue(){
+        return this.constructor.staticValue 
+    }
+}
+```
+
+
+- another way to declare static attributes 
+
+```javascript
+
+function Base(){
+ 
+    Base.staticMethod=function(){
+         console.log("iam a static method")
+    }
+
+   Base.staticValue = 0
+    
+    this.increaseStaticValue=function(){
+        return ++Base.staticValue
+    }
+    
+    this.getStaticValue=function(){
+        return Base.staticValue 
+    }
+    
+}
+
+
+```
+
+---
+
 ## 7. MixIn
 
  - Mixins can be considered a form of object-oriented programming (OOP), as they provide a way to reuse code and implement features in a modular and composable manner. However, they do not provide inheritance in the traditional sense, as mixins do not create a hierarchy of objects like class-based inheritance. Instead, mixins are a way of combining properties and methods from different objects into a single object, offering a different way of reusing and composing code.
 
 - example of  Mixin Pattern Implementation : 
 
-```
+```javascript
+
 	  function infoMixin(someObj){
-			console.log(`${someObj.name} , ${someObj.age } years Old`)
+			someObj.info=()=>{
+				  console.log(`${someObj.name} , ${someObj.age } years Old`)
+			}
 	  }
 
 	  let me = {name:"eslam",age:21,description:"Software Engineer (Backend - Developer) and CyberSecurity Researcher ( Red - Teamer)"}
@@ -454,16 +611,18 @@
 	  infoMixin(myBrother)
 	  infoMixin(myPit)
 
+	  me.info()
 ```
 ---
 
 ## 8. Prototype
 
-- prototype is property of Constructor Used to Define shareable Object or Refference between all Created Objected and the Constructor it self to avoid duplicaiton of code and also duplicaiton in data in memory 
+- `prototype` is property of Constructor Used to Define shareable Object or Refference between all Created Objected and the Constructor it self to avoid duplicaiton of code and also duplicaiton in data in memory 
 
 for example : 
 
-```
+```javascript
+
 	  function Person(name,age){
 			this.name=name
 			this.age=age
@@ -474,7 +633,8 @@ for example :
 
 so every human instance will have it,s copy of this properties name,age,OwnABrains but every human may have different names and ages but all of them have a brain so if we have a million instances of Person every one will have his own copy of name,age,ownABrain but we can use a shareable or Refference object contain have a brain value between all of them example : 
 
-```
+```javascript
+
 function Person(name,age){
 	  this.name=name
 	  this.age=age
@@ -486,7 +646,8 @@ Person.prototype.ownABrain=true
 
 to explain this we in more details let,s see this example : 
 
-```
+```javascript
+
 function Person(name,age){
 	  this.name=name
 	  this.age=age
@@ -499,7 +660,8 @@ Person.shareableRef={ownABrain:true}
 
 now let,s create a 2  instances from Person :
 
-```
+```javascript
+
 
 let eslam = new Person("eslam",21) // eslam = {name:"eslam",age:21,	__shareableRef:{ownABrain:true}	}
 let mohamed = new Person("mohamed",40) //mohamed = {name:"mohamed",age:40,	__shareableRef:{ownABrain:true}	}
@@ -519,7 +681,8 @@ let crypto = new Person("crypto",21)  // crypto = {name:"crypto",age:21,	__share
 
 Define the Constructor with Prototype : 
 
-```
+```javascript
+
 function Person(name,age){
 	  this.name=name
 	  this.age=age
@@ -531,7 +694,8 @@ Person.prototype={ownABrain:true}
 
 let,s Create Instances Objects from This Constructor : 
 
-```
+```javascript
+
 let eslam = new Person("eslam",21) 
 let mohamed = new Person("mohamed",40)
 
@@ -559,14 +723,16 @@ console.log(eslam.ownABrain) // true
 
 - `instanceof` work by compareing the `instance.__proto__` with `constructor.prototype` it check if `__proto__` of instance is refer to `prototype` of constructor  like :
 
-```
+```javascript
+
 instance.__proto__ === Constructor.prototype
 ```
 and will loop over subtypes or instances `__proto__` and compare and when it find it refer to `Constructor.prototype` it will return `true` and if didn,t found over all subtypes it will return `false`
 
 - and that,s How It Internally Really Work : 
 
-```
+```javascript
+
 function instanceOf(obj, constructor) {
   let proto = obj.__proto__;
   while (proto) {
@@ -579,9 +745,38 @@ function instanceOf(obj, constructor) {
 }
 ```
 
-<br> 
+- It's important to note that the `__proto__` property is a non-standard property, and it's not recommended to use it in production code, as it's not part of the official JavaScript specification and may not be supported in all environments. Instead, it's recommended to use the standard `Object.getPrototypeOf` method to access an object's prototype or use `constructor.prototype`.
+
+
+- Production Implementation that work in node or deno or browser  
+
+```javascript
+function instanceOf(obj, constructor) {
+  let proto =Object.getPrototypeOf(obj);
+    if (proto === constructor.prototype) {
+      return true;
+    }
+  while (proto!=Object.prototype){ 
+    if (proto === constructor.prototype) {
+      return true;
+    }
+    proto = Object.getPrototypeOf(obj);
+  }
+  return false;
+}
 
 ```
+
+```javascript
+function instanceOf(obj, constructor) {
+    return constructor.prototype.isPrototypeOf(obj)
+}
+```
+
+<br> 
+
+```javascript
+
 	  let me = new Person("eslam",21)
 	  if(me instanceof Person){
 			console.log("me is instance of Person")
@@ -595,7 +790,8 @@ function instanceOf(obj, constructor) {
 
 - `constructor` is property of any instance and it Refference to The Constructor which is instance created from 
 
-```
+```javascript
+
 	  let me = new Person("eslam",21)
 	  let crypto= new me.constructor("crypto",21)
 
@@ -618,7 +814,8 @@ function instanceOf(obj, constructor) {
 example : 
 
 
-```
+```javascript
+
 	  function Person(name,age){
 			this.name=name
 			this.age=age
@@ -662,7 +859,8 @@ example :
 
 example : 
 
-```
+```javascript
+
 function Person(name,age){
 	  this.name=name
 	  this.age=age
@@ -687,7 +885,8 @@ console.log(	Person.prototype.isPrototypeOf({name:"crypto",age:21})	) //false
 
 - in this Docs i use `__proto__` to provide the Concept , in production you should use `constructor.prototype` or `Object.getPrototypeOf()` instead  !
 
-```
+```javascript
+
 function Person(name,age){
 	  this.name=name
 	  this.age=age
@@ -750,7 +949,8 @@ console.log(Person.prototype.owner) // Crypt00o
 
 we can Override it on `Object.prototype` so it,s behaviour  will change for all objects for example : 
 
-```
+```javascript
+
 Object.prototype.hasOwnProperty=function hasOwnProperty(property){
 	  console.log(`[+] Checking if contains key : ${property} or not `)
 	 return (property in this ? true : false)
@@ -759,7 +959,8 @@ Object.prototype.hasOwnProperty=function hasOwnProperty(property){
 
 now any new Object will have our defined `hasOwnProperty` method
 
-```
+```javascript
+
 	  function Person(name,age){
 			this.name=name
 			this.age=age
@@ -788,7 +989,8 @@ now any new Object will have our defined `hasOwnProperty` method
 
 - Here's an example to show how Object.create() works internally:
 
-```
+```javascript
+
 function createObject(proto) {
   let obj = {};
   obj.__proto__ = proto;
@@ -800,7 +1002,8 @@ function createObject(proto) {
 
 example of useing `Object.create()`
 
-```
+```javascript
+
 let crypto = Object.create(Object.prototype , {
 			name:{
 				  value:"Crypt00o",
@@ -848,7 +1051,8 @@ me.info()
 - let,s Implement inheritance useing `prototype` 
 
 
-```
+```javascript
+
 	  function Person(name,age){
 			this.name=name
 			this.age=age
@@ -897,7 +1101,8 @@ console.log((new SecurityEngineer("eslam",21,"red") ).constructor === Person)  /
 ```
 - so let,s make `SecurityEngineer.prototype` as Refference to `Person.prototype` , but change `constructor` value which will be `Person` to `SecurityEngineer`
 
-```
+```javascript
+
 SecurityEngineer.prototype = Object.create(Person.prototype,{
 	  constructor:{
 			value:SecurityEngineer,
@@ -910,7 +1115,8 @@ SecurityEngineer.prototype = Object.create(Person.prototype,{
 
 
 
-```
+```javascript
+
 let me = new Developer("eslam",21,salary="sorry , it,s personal things ")
 
 console.log(me instanceof Developer) // true , that,s because me.__proto__==Developer.prototype
@@ -920,7 +1126,8 @@ console.log(me instanceof Object) // true ,  that,s because me.__proto__.__proto
 
 let,s create instance from `SecurityEngineer` Constructor
 
-```
+```javascript
+
 let meAlso= new SecurityEngineer("eslam",21,"red")
 
 me.info()
@@ -929,7 +1136,8 @@ meAlso.info()
 
  let,s Override `info()` inherited method  on `SecurityEngineer` Only
 
-```
+```javascript
+
 // @Override info()
 SecurityEngineer.prototype.info=function(){
 	  console.log("Deperacated Use describe() Method Instead")
@@ -947,7 +1155,8 @@ SecurityEngineer.prototype.describe=function(){
 	  1. `instance.__proto__.info()` which Refference to => `SecurityEngineer.prototype.info()`
 	  2. `instance.__proto__.__proto__.info()` which Refference to => `Person.prototype.info()`
 
-```
+```javascript
+
 meAlso.info() // will print : 'Deperacated Use describe() Method Instead'
 meAlso.__proto__.info() // will print : 'name : eslam , age : 21'
 
@@ -958,7 +1167,8 @@ me.info() // will print : 'name : eslam , age : 21'
 
 - in above example we not Override `info()` method directly , to explain that  really let,s explain how we access method `info()` on instances Objects
 
-```
+```javascript
+
 function accessPrototypeProp(object,prop){
 	  while(object && object==null){
 			if(object.__proto__[prop]){
