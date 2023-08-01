@@ -627,3 +627,193 @@ example();
 
 - `async/await` makes it easy to write asynchronous code that looks and behaves like synchronous code. It is a more readable and maintainable way of handling asynchronous operations compared to using callbacks or chaining promises.
 
+
+
+## Iterators
+
+- ES6 introduces a new way of traversing data structures called iteration.
+- Iteration is based on two main concepts: iterable and iterator.
+
+
+- ### Iterable
+
+    - An iterable is an object that wants to make its elements accessible to the public.
+    - It does so by implementing a method with a key of `Symbol.iterator`.
+    - This method is a factory for creating iterators.
+
+- ### Iterator
+
+    - An iterator is a pointer for traversing the elements of an iterable. 
+    - It keeps track of where the iterator currently is in the data structure and allows for the retrieval of the next element in the sequence.
+
+
+- The following data structures are examples of iterables:
+
+    - `Arrays`
+    - `Strings`
+    - `Maps`
+    - `Sets`
+
+- However, plain objects are not iterable by default.
+
+- The idea behind iterability is to provide a standard way for data consumers (such as `for-of` loops and the spread operator `...`) to retrieve values from data sources (such as `arrays`, `maps`, and `strings`).
+
+- ES6 introduces the Iterable interface to provide a standard way of creating consumers for various data sources.
+    - To use an iterable, a consumer calls the Symbol.iterator method on the iterable object, which returns an iterator.
+    - The consumer can then call the next() method on the iterator to retrieve the next value in the sequence.
+    - repeat this untill next retrun
+
+```javascript
+
+
+ // Define Iterable Object
+
+const obj = {
+    name: '0xCrypt00o',
+    age: 22,
+    job: 'Software Engineer | Cybersecurity Researcher',
+ 
+    [Symbol.iterator]() {
+        const properties = Object.keys(this);
+        let index = 0;
+        return {
+            next: () => {
+			    if (index < properties.length) {
+				    const value = this[properties[index]];
+				    index++;
+				    return { value, done: false };
+			    } else {
+				    return { done: true };
+			    }
+		    }
+	    };
+    }
+
+
+}; 
+
+
+// make iterator function non-enumerable when logding object
+
+Object.defineProperty(obj, Symbol.iterator, { enumerable: false });
+
+// now we can use for-of with object , because it worked with iterable objects only
+
+for (let i of obj) {
+console.log(i)
+}
+
+// and also we can use spread operator with iterables
+
+let me = {...obj}
+console.log(me)
+
+```
+
+-  The following ES6 language constructs make use of the Iterable:
+    - Destructuring via an Array pattern
+    - `for-of` loop
+    - `Array.from()`
+    - Spread operator `...`
+    - `Constructors` of `Maps` and `Sets`
+    - `Promise.all()` , `Promise.race()`
+    - `yield*`
+
+## Generators
+
+- Generators are functions in JavaScript that allow you to define an iterative algorithm by writing a single function that can maintain its own state and is capable of producing a sequence of values.
+- The key feature of generators is that they allow you to pause and resume the execution of a function, which gives you more control over the flow of execution.
+- A generator function is defined using the `function*` syntax and contains one or more `yield` statements that can pause the execution of the function and return a value.
+- When a generator function is called, it returns a generator object that can be used to control the execution of the function.
+- Generators can be thought of as processes that can be paused and resumed while executing a particular piece of code. 
+- This allows you to write code that can generate a sequence of values over time, rather than having to generate all the values at once and store them in memory.
+
+```javascript
+
+// implemntation for range which is in python & rust , and implement it as generator function
+
+function* range(start = 0, stop = 0, step = 1) {
+  if (step === 0) throw new Error('Step cannot be zero');
+  
+  if ( (step > 0 && start >= stop) || (step < 0 && start <= stop) ) return;
+  
+  let current = start;
+
+  while ((step > 0 && current < stop) || (step < 0 && current > stop)) {
+    yield current;
+    current += step;
+  }
+
+}
+
+for ( let i of range(0,5) ) console.log(i);
+
+
+for ( let i of range(5,0,-1) ) console.log(i);
+
+
+```
+
+so Generator functions are a special type of function in JavaScript that allow you to define an iterative algorithm by writing a single function that can maintain its own state and is capable of producing a sequence of values. 
+
+- Generator functions can be declared in several ways:
+
+    1. Function declarations:
+```javascript
+function* genFunc() {
+  // ...
+}
+const genObj = genFunc();
+```
+
+    2. Function expressions:
+```javascript
+const genFunc = function* () {
+  // ...
+};
+const genObj = genFunc();
+```
+
+    3. Generator method definitions in object literals:
+```javascript
+const obj = {
+  *generatorMethod() {
+    // ...
+  }
+};
+const genObj = obj.generatorMethod();
+```
+
+    4. Generator method definitions in class definitions:
+```javascript
+class MyClass {
+  *generatorMethod() {
+    // ...
+  }
+}
+const myInstance = new MyClass();
+const genObj = myInst.generatorMethod();
+```
+
+
+- Generators in JavaScript have many use cases, which include:
+
+    - Simplifying asynchronous code: Generators can be used to execute simple asynchronous blocks of code, making it easier to write code that works with asynchronous operations without the complexity of traditional callbacks or promises.
+
+    - Receiving asynchronous data using generators: The new async/await syntax in JavaScript is internally based on generators. This allows developers to write cleaner and more readable code when working with asynchronous operations.
+
+    - Implementing Iterables: Generators can be used to define custom iterables in JavaScript, allowing developers to iterate over complex data structures or objects in a more natural and efficient way than with traditional iteration methods. For example, the objectEntries() function shown above uses a generator to create an iterable over the properties of an object.
+```javascript 
+function* objectEntries(obj) {
+    const propKeys = Reflect.ownKeys(obj);
+
+    for (const propKey of propKeys) {
+        // `yield` returns a value and then pauses
+        // the generator. Later, execution continues
+        // where it was previously paused.
+        yield [propKey, obj[propKey]];
+    }
+}
+```
+
+Overall, generators provide a powerful and flexible tool for working with complex data structures, asynchronous operations, and other advanced programming concepts in JavaScript. They allow for cleaner and more efficient code that is easier to read and maintain, which can be especially valuable in large or complex codebases.
