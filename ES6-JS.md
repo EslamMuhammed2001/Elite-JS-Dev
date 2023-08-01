@@ -3,9 +3,9 @@
 ## Var , Let , Const
 
 
-1. `var` :   variable can be access in any scobe because it is golabal and you can decalre with var many times, 
-2. `let` :   variable can be access only through its scope and the variable decalred localy and once one time
-3. `const` :  variable can be access only through its scope and the variable decalred localy and once one time and it also immutable 
+1. `var` :   variable can be access in any scope because it is global and  can  be declared with var many times.
+2. `let` :   variable can be access only through its scope and the variable declared localy and once,
+3. `const` :  variable can be access only through its scope and the variable declared localy and once and it also immutable 
 
 
 ```javascript
@@ -102,7 +102,7 @@ function(){
 )() ;
 
 ( 
-	  function()=>{
+	  function(){
 			console.log('iam self invoked anonymous')
 	  } 
 )() ;
@@ -358,18 +358,20 @@ atlas.launch();
 
 class Book {
 
+  this.#author="unknown";
+
   constructor(author) {
-    this._author = author;
+    this.#author = author;
   }
 
   // getter
   get writer() {
-    return this._author;
+    return this.#author;
   }
   
   // setter
   set writer(updatedAuthor) {
-    this._author = updatedAuthor;
+    this.#author = updatedAuthor;
   }
 
 }
@@ -485,20 +487,47 @@ import {add,subtract} from 'moudle.js'
 import Module from 'moudle.js'
 import * as Module from 'moudle.js'
 ```
-
 ## Promises
+
+- Before Promises were introduced in JavaScript, callback hell was a common pattern used to handle asynchronous operations. Here's an example of how to simulate callback hell to handle multiple asynchronous operations:
+```javascript
+getUser(userId, function(error, user) {
+  if (error) {
+    console.error('Error getting user:', error);
+    return;
+  }
+
+  getPosts(user.id, function(error, posts) {
+    if (error) {
+      console.error('Error getting posts:', error);
+      return;
+    }
+
+    getComments(posts[0].id, function(error, comments) {
+      if (error) {
+        console.error('Error getting comments:', error);
+        return;
+      }
+
+      // Do something with the comments
+      console.log('Comments:', comments);
+    });
+  });
+});
+```
 
 -  promise is an object that represents the eventual completion (or failure) of an asynchronous operation, and its resulting value.
 - Promises were introduced in ECMAScript 6 (ES6) as a way to handle asynchronous operations in a more elegant and maintainable way than using callbacks.
 
+
 - promise is in one of three states:
-	  - `pending` : the initial state, neither fulfilled nor rejected.
-	  -  `fulfilled` : meaning that the operation completed successfully.
-	  -  `rejected` : meaning that the operation failed
+    - `pending` : the initial state, neither`fulfilled` nor `rejected`.
+    - `fulfilled` : meaning that the operation completed successfully.
+    - `rejected` : meaning that the operation failed
+    - `settled` : final state , either `fulfilled` or `rejected`.
 
--  A promise is said to be `settled` or `pending` if it is either fulfilled or rejected.
+Here's an example of a simple promise that wraps a `setTimeout` function:
 
- Here's an example of a simple promise that wraps a `setTimeout` function:
 
 ```javascript
 let promise = new Promise((resolve, reject) => {
@@ -510,7 +539,7 @@ let promise = new Promise((resolve, reject) => {
 
 - we create a new promise by passing a function to the `Promise` constructor. 
 - This function takes two arguments, `resolve` and `reject`, which are functions that can be called to change the state of the promise.
-- In this example, we call resolve("Hello World!") after 1 second, which changes the state of the promise to fulfilled and makes the resolved value "Hello World!" available to any code that is listening for the promise to be settled.
+- In this example, we call `resolve("Hello World!")` after `5` second, which changes the state of the promise to `fulfilled` and makes the resolved value `"Hello World!"` available to any code that is listening for the promise to be `settled`.
 
 - To use the promise, we can attach a `.then()` method to it, which takes a single argument, a function that is called when the promise is `fulfilled`:
 
@@ -522,7 +551,7 @@ promise.then((value) => {
 
 In this example, the function passed to `.then()` will be called with the resolved value of the promise, which is `Hello World!`, and it will log the value to the console.
 
-- We can also attach a `.catch()` method to the promise, which takes a single argument, a function that is called when the promise is rejected.
+- We can also attach a `.catch()` method to the promise, which takes a single argument, a function that is called when the promise is `rejected`.
 
 ```javascript
 let promise = new Promise((resolve, reject) => {
@@ -535,9 +564,9 @@ promise.catch((error) => {
 });
 ```
 
-In this example, the function passed to `.catch()` will be called with the rejected value of the promise, which is an error object with the message "Something went wrong!", and it will log the error to the console.
+In this example, the function passed to `.catch()` will be called with the rejected value of the promise, which is an error object with the message `"Something went wrong!"`, and it will log the error to the console.
 
-- Promise also provides a `.finally()` method which is called when the promise is settled regardless of whether the promise is fulfilled or rejected.
+- Promise also provides a `.finally()` method which is called when the promise is `settled` regardless of whether the promise is `settled` either `fulfilled` or `rejected`.
 
 ```javascript
 let somePromise = new Promise(
@@ -582,7 +611,7 @@ async function example() {
 }
 ```
 
-For example, consider a simple promise that wraps a setTimeout function:
+For example, consider a simple promise that wraps a `setTimeout` function:
 
 ```javascript
 let promise = new Promise((resolve) => {
@@ -602,7 +631,7 @@ async function example() {
 example();
 ```
 
-In this example, the await keyword is used to pause the execution of the example() function until the promise is settled. Once the promise is settled, the resolved value "Hello World!" is assigned to the result variable, and the rest of the function continues to execute, logging the result to the console.
+In this example, the `await` keyword is used to pause the execution of the `example()` function until the promise is `settled`. Once the promise is `settled`, the resolved value `"Hello World!"` is assigned to the result variable, and the rest of the function continues to execute, logging the result to the console.
 
 - In case of any error occured in the promise, we can use `try-catch` block to handle the error
 
@@ -659,9 +688,9 @@ example();
 - The idea behind iterability is to provide a standard way for data consumers (such as `for-of` loops and the spread operator `...`) to retrieve values from data sources (such as `arrays`, `maps`, and `strings`).
 
 - ES6 introduces the Iterable interface to provide a standard way of creating consumers for various data sources.
-    - To use an iterable, a consumer calls the Symbol.iterator method on the iterable object, which returns an iterator.
-    - The consumer can then call the next() method on the iterator to retrieve the next value in the sequence.
-    - repeat this untill next retrun
+    - To use an iterable, a consumer calls the `Symbol.iterator` method on the iterable object, which returns an iterator.
+    - The consumer can then call the `next()` method on the iterator to retrieve the next value in the sequence.
+    - repeat this untill next retrun `{ done: false }`
 
 ```javascript
 
@@ -759,41 +788,45 @@ so Generator functions are a special type of function in JavaScript that allow y
 - Generator functions can be declared in several ways:
 
     1. Function declarations:
-```javascript
-function* genFunc() {
-  // ...
-}
-const genObj = genFunc();
-```
+
+    ```javascript
+    function* genFunc() {
+        // ...
+    }
+    const genObj = genFunc();
+    ```
 
     2. Function expressions:
-```javascript
-const genFunc = function* () {
-  // ...
-};
-const genObj = genFunc();
-```
+
+    ```javascript
+    const genFunc = function* () {
+        // ...
+    };
+    const genObj = genFunc();
+    ```
 
     3. Generator method definitions in object literals:
-```javascript
-const obj = {
-  *generatorMethod() {
-    // ...
-  }
-};
-const genObj = obj.generatorMethod();
-```
+
+    ```javascript
+    const obj = {
+        *generatorMethod() {
+        // ...
+        }
+    };
+    const genObj = obj.generatorMethod();
+    ```
 
     4. Generator method definitions in class definitions:
-```javascript
-class MyClass {
-  *generatorMethod() {
-    // ...
-  }
-}
-const myInstance = new MyClass();
-const genObj = myInst.generatorMethod();
-```
+
+    ```javascript
+    class MyClass {
+        *generatorMethod() {
+            // ...
+        }
+    }
+    const myInstance = new MyClass();
+    const genObj = myInstance.generatorMethod();
+    ```
 
 
 - Generators in JavaScript have many use cases, which include:
@@ -802,7 +835,7 @@ const genObj = myInst.generatorMethod();
 
     - Receiving asynchronous data using generators: The new async/await syntax in JavaScript is internally based on generators. This allows developers to write cleaner and more readable code when working with asynchronous operations.
 
-    - Implementing Iterables: Generators can be used to define custom iterables in JavaScript, allowing developers to iterate over complex data structures or objects in a more natural and efficient way than with traditional iteration methods. For example, the objectEntries() function shown above uses a generator to create an iterable over the properties of an object.
+    - Implementing Iterables: Generators can be used to define custom iterables in JavaScript, allowing developers to iterate over complex data structures or objects in a more natural and efficient way than with traditional iteration methods. For example, the `objectEntries()` function shown above uses a generator to create an iterable over the properties of an object.
 ```javascript 
 function* objectEntries(obj) {
     const propKeys = Reflect.ownKeys(obj);
