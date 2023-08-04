@@ -27,6 +27,17 @@ function Base(attr1 = undefined, attr2 = undefined, attr3Value = undefined) {
 	this.info = function() {
 		console.log(`attr1:${this.attr1} , attr2 : ${this.attr2}`)
 	}
+
+    /*
+    * assgin prototype of Base for new instance or object created by this constructor 
+    * we can use __proto__  : obj.__proto__ = Constructor.prototype;
+    * this.__proto__ = Base.prototype ;
+    * but it isn,t standard between all js runtimes so we will use 
+    * Object.setPrototypeOf(obj,Constructor.prototype)
+    */
+
+    Object.setPrototypeOf(this,Base.prototype)
+
 }
 
 ```
